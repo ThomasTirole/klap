@@ -68,10 +68,15 @@ Accédez à `http://localhost:3000`
 
 ## 📖 Documentation
 
-- **[USAGE_GUIDE.md](./USAGE_GUIDE.md)** : Guide d'utilisation complet
-- **[PROGRESS.md](./PROGRESS.md)** : État d'avancement du projet
-- **[PROJECT_STRUCTURE.md](./PROJECT_STRUCTURE.md)** : Architecture du code
-- **[VISION.md](./VISION.md)** : Vision et objectifs du projet
+**Toute la documentation est organisée dans le dossier `/docs`**
+
+👉 **[Consultez l'index complet de la documentation](./docs/00-INDEX.md)**
+
+**Liens rapides** :
+- **[Guide utilisateur](./docs/03-GUIDE_UTILISATEUR.md)** - Comment utiliser KLAP
+- **[Roadmap](./docs/30-ROADMAP.md)** - Développements futurs
+- **[Setup Supabase](./docs/04-SETUP_REALTIME.md)** - Configuration technique
+- **[Architecture](./docs/02-ARCHITECTURE.md)** - Structure du code
 
 ## 🛠️ Stack Technique
 

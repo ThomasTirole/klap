@@ -57,7 +57,7 @@
         </div>
 
         <!-- Actions -->
-        <div class="flex gap-3 flex-wrap">
+        <div class="flex gap-3">
           <NuxtLink
             v-if="session.status === 'open' && items.length > 0"
             :to="`/teacher/live/${session.id}`"
@@ -67,15 +67,6 @@
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z" />
             </svg>
             Mode Live
-          </NuxtLink>
-          <NuxtLink
-            :to="`/teacher/sessions/responses-${session.id}`"
-            class="px-6 py-2 bg-purple-600 hover:bg-purple-700 text-white font-semibold rounded-lg transition-colors inline-flex items-center gap-2"
-          >
-            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01" />
-            </svg>
-            Voir les réponses
           </NuxtLink>
           <button
             v-if="session.status === 'draft'"
@@ -100,17 +91,51 @@
         </div>
       </div>
 
-      <!-- Questions -->
-      <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
-        <div class="flex justify-between items-center mb-6">
-          <h3 class="text-xl font-bold text-gray-900">Questions</h3>
-          <button
-            @click="showAddQuestion = true"
-            class="px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white font-semibold rounded-lg transition-colors"
-          >
-            + Ajouter une question
-          </button>
+      <!-- Tabs -->
+      <div class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
+        <!-- Tab Headers -->
+        <div class="border-b border-gray-200">
+          <nav class="flex">
+            <button
+              @click="activeTab = 'questions'"
+              class="px-6 py-4 text-sm font-medium transition-colors border-b-2"
+              :class="activeTab === 'questions'
+                ? 'border-indigo-600 text-indigo-600'
+                : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'"
+            >
+              <svg class="w-5 h-5 inline mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+              </svg>
+              Questions ({{ items.length }})
+            </button>
+            <button
+              @click="activeTab = 'responses'"
+              class="px-6 py-4 text-sm font-medium transition-colors border-b-2"
+              :class="activeTab === 'responses'
+                ? 'border-indigo-600 text-indigo-600'
+                : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'"
+            >
+              <svg class="w-5 h-5 inline mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 00-2-2m0 0h2a2 2 0 012 2h2a2 2 0 002-2v-5a2 2 0 00-2-2H9a2 2 0 00-2 2v5a2 2 0 002 2zm0-10V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 00-2-2m0 0h2a2 2 0 012 2h2a2 2 0 002-2v-5a2 2 0 00-2-2H9a2 2 0 00-2 2v5a2 2 0 002 2z" />
+              </svg>
+              Réponses ({{ totalResponses }})
+            </button>
+          </nav>
         </div>
+
+        <!-- Tab Content -->
+        <div class="p-6">
+          <!-- Onglet Questions -->
+          <div v-if="activeTab === 'questions'">
+            <div class="flex justify-between items-center mb-6">
+              <h3 class="text-xl font-bold text-gray-900">Questions</h3>
+              <button
+                @click="showAddQuestion = true"
+                class="px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white font-semibold rounded-lg transition-colors"
+              >
+                + Ajouter une question
+              </button>
+            </div>
 
         <div v-if="items.length === 0" class="text-center py-12 border-2 border-dashed border-gray-300 rounded-lg">
           <svg class="w-16 h-16 mx-auto text-gray-400 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -164,6 +189,84 @@
             </div>
           </div>
         </div>
+          </div>
+
+          <!-- Onglet Réponses -->
+          <div v-else-if="activeTab === 'responses'">
+            <h3 class="text-xl font-bold text-gray-900 mb-6">Toutes les réponses</h3>
+
+            <div v-if="loadingResponses" class="text-center py-12">
+              <p class="text-gray-500">Chargement des réponses...</p>
+            </div>
+
+            <div v-else-if="allResponses.length === 0" class="text-center py-12 border-2 border-dashed border-gray-300 rounded-lg">
+              <svg class="w-16 h-16 mx-auto text-gray-400 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4" />
+              </svg>
+              <p class="text-gray-600">Aucune réponse pour le moment</p>
+            </div>
+
+            <div v-else class="space-y-4">
+              <!-- Groupe par question -->
+              <div
+                v-for="item in itemsWithResponses"
+                :key="item.id"
+                class="border border-gray-200 rounded-lg p-4"
+              >
+                <div class="flex items-start justify-between mb-4">
+                  <div>
+                    <h4 class="font-semibold text-gray-900">{{ item.title }}</h4>
+                    <span class="text-xs text-gray-500">{{ itemTypeLabel(item.type) }}</span>
+                  </div>
+                  <span class="px-2 py-1 bg-indigo-100 text-indigo-700 text-xs font-medium rounded">
+                    {{ item.responses.length }} réponse(s)
+                  </span>
+                </div>
+
+                <!-- Réponses pour cette question -->
+                <div class="space-y-2">
+                  <div
+                    v-for="response in item.responses"
+                    :key="response.id"
+                    class="bg-gray-50 rounded-lg p-3 flex justify-between items-start"
+                  >
+                    <div class="flex-1">
+                      <!-- Affichage selon le type -->
+                      <div v-if="item.type === 'poll_single' || item.type === 'poll_multi'" class="text-sm text-gray-700">
+                        <strong>Choix :</strong> {{ formatPollResponse(response.payload, item) }}
+                      </div>
+                      <div v-else-if="item.type === 'open'" class="text-sm text-gray-700">
+                        {{ response.payload.text }}
+                      </div>
+                      <div v-else-if="item.type === 'scale'" class="text-sm text-gray-700">
+                        <strong>Note :</strong> {{ response.payload.value }}
+                      </div>
+                      <div v-else-if="item.type === 'wordcloud'" class="text-sm text-gray-700">
+                        <strong>Mots :</strong> {{ response.payload.words.join(', ') }}
+                      </div>
+
+                      <p class="text-xs text-gray-500 mt-1">
+                        {{ formatDate(response.created_at) }} • Participant {{ response.participant_id.substring(0, 8) }}
+                      </p>
+                    </div>
+
+                    <!-- Bouton supprimer (pour open et wordcloud) -->
+                    <button
+                      v-if="item.type === 'open' || item.type === 'wordcloud'"
+                      @click="openDeleteResponse(response, item)"
+                      class="ml-4 p-1 text-gray-400 hover:text-red-600 transition-colors"
+                      title="Supprimer"
+                    >
+                      <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                      </svg>
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
 
@@ -197,6 +300,20 @@
       @confirm="handleEditConfirm"
       @cancel="handleEditCancel"
     />
+
+    <!-- Modal de confirmation suppression réponse -->
+    <ConfirmModal
+      :show="confirmDeleteResponse.show"
+      title="Supprimer la réponse ?"
+      :message="confirmDeleteResponse.item?.type === 'wordcloud'
+        ? 'Êtes-vous sûr de vouloir supprimer ces mots du nuage ? Cette action est irréversible.'
+        : 'Êtes-vous sûr de vouloir supprimer cette réponse ? Cette action est irréversible.'"
+      confirm-text="Supprimer"
+      cancel-text="Annuler"
+      variant="danger"
+      @confirm="handleDeleteResponse"
+      @cancel="handleDeleteResponseCancel"
+    />
   </div>
 </template>
 
@@ -209,6 +326,7 @@ definePageMeta({
 
 const route = useRoute()
 const router = useRouter()
+const supabase = useSupabase()
 const { getSession, updateSession, deleteSession, getSessionItems, deleteItem, updateItem } = useSession()
 
 const sessionId = route.params.id as string
@@ -217,12 +335,20 @@ const items = ref<Item[]>([])
 const loading = ref(true)
 const showAddQuestion = ref(false)
 const editingItem = ref<Item | null>(null)
+const activeTab = ref<'questions' | 'responses'>('questions')
+const allResponses = ref<any[]>([])
+const loadingResponses = ref(false)
 const confirmDeleteItem = ref({
   show: false,
   item: null as Item | null
 })
 const promptEdit = ref({
   show: false,
+  item: null as Item | null
+})
+const confirmDeleteResponse = ref({
+  show: false,
+  response: null as any,
   item: null as Item | null
 })
 
@@ -338,6 +464,90 @@ const handleDeleteItemConfirm = async () => {
 const handleDeleteItemCancel = () => {
   confirmDeleteItem.value = { show: false, item: null }
 }
+
+// Réponses
+const totalResponses = computed(() => allResponses.value.length)
+
+const itemsWithResponses = computed(() => {
+  return items.value
+    .map(item => ({
+      ...item,
+      responses: allResponses.value.filter(r => r.item_id === item.id)
+    }))
+    .filter(item => item.responses.length > 0)
+})
+
+const formatPollResponse = (payload: any, item: Item) => {
+  const config = item.config as any
+  if (Array.isArray(payload.selected)) {
+    // Multiple
+    return payload.selected.map((id: string) => {
+      const option = config.options.find((o: any) => o.id === id)
+      return option?.text || id
+    }).join(', ')
+  } else {
+    // Single
+    const option = config.options.find((o: any) => o.id === payload.selected)
+    return option?.text || payload.selected
+  }
+}
+
+const loadAllResponses = async () => {
+  loadingResponses.value = true
+  try {
+    const { data, error } = await supabase
+      .from('responses')
+      .select('*')
+      .eq('session_id', sessionId)
+      .order('created_at', { ascending: false })
+
+    if (error) throw error
+    allResponses.value = data || []
+  } catch (error) {
+    console.error('Error loading responses:', error)
+  } finally {
+    loadingResponses.value = false
+  }
+}
+
+const openDeleteResponse = (response: any, item: Item) => {
+  confirmDeleteResponse.value = {
+    show: true,
+    response,
+    item
+  }
+}
+
+const handleDeleteResponse = async () => {
+  if (!confirmDeleteResponse.value.response) return
+
+  try {
+    const { error } = await supabase
+      .from('responses')
+      .delete()
+      .eq('id', confirmDeleteResponse.value.response.id)
+
+    if (error) throw error
+
+    // Recharger les réponses
+    await loadAllResponses()
+  } catch (error) {
+    console.error('Error deleting response:', error)
+  }
+
+  confirmDeleteResponse.value = { show: false, response: null, item: null }
+}
+
+const handleDeleteResponseCancel = () => {
+  confirmDeleteResponse.value = { show: false, response: null, item: null }
+}
+
+// Charger les réponses quand on ouvre l'onglet
+watch(activeTab, (newTab) => {
+  if (newTab === 'responses' && allResponses.value.length === 0) {
+    loadAllResponses()
+  }
+})
 
 onMounted(async () => {
   loading.value = true

@@ -38,6 +38,16 @@
               {{ formatTime(response.created_at) }}
             </p>
           </div>
+          <button
+            v-if="showDeleteButtons"
+            @click="openDeleteConfirm(response)"
+            class="p-2 text-gray-400 hover:text-red-600 transition-colors"
+            title="Supprimer cette réponse"
+          >
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+            </svg>
+          </button>
         </div>
       </div>
     </div>
@@ -55,6 +65,18 @@
         Actualiser
       </button>
     </div>
+
+    <!-- Modal de confirmation suppression -->
+    <ConfirmModal
+      :show="confirmDelete.show"
+      title="Supprimer la réponse ?"
+      message="Êtes-vous sûr de vouloir supprimer cette réponse ? Cette action est irréversible."
+      confirm-text="Supprimer"
+      cancel-text="Annuler"
+      variant="danger"
+      @confirm="handleDeleteConfirm"
+      @cancel="handleDeleteCancel"
+    />
   </div>
 </template>
 
@@ -62,9 +84,12 @@
 import type { Item, OpenPayload, Response } from '~/types/database'
 import type { RealtimeChannel } from '@supabase/supabase-js'
 
-const props = defineProps<{
+const props = withDefaults(defineProps<{
   item: Item
-}>()
+  showDeleteButtons?: boolean
+}>(), {
+  showDeleteButtons: false
+})
 
 const supabase = useSupabase()
 const { subscribeToItemResponses, unsubscribe } = useRealtime()
@@ -78,6 +103,10 @@ interface OpenResponse {
 const responses = ref<OpenResponse[]>([])
 const lastUpdate = ref('')
 let realtimeChannel: RealtimeChannel | null = null
+const confirmDelete = ref({
+  show: false,
+  response: null as OpenResponse | null
+})
 
 const formatTime = (timestamp: string) => {
   const date = new Date(timestamp)
@@ -129,6 +158,38 @@ const handleNewResponse = (response: Response) => {
     })
     updateLastUpdate()
   }
+}
+
+const openDeleteConfirm = (response: OpenResponse) => {
+  confirmDelete.value = {
+    show: true,
+    response
+  }
+}
+
+const handleDeleteConfirm = async () => {
+  if (!confirmDelete.value.response) return
+
+  try {
+    const { error } = await supabase
+      .from('responses')
+      .delete()
+      .eq('id', confirmDelete.value.response.id)
+
+    if (error) throw error
+
+    // Retirer de la liste
+    responses.value = responses.value.filter(r => r.id !== confirmDelete.value.response!.id)
+    updateLastUpdate()
+  } catch (error) {
+    console.error('Error deleting response:', error)
+  }
+
+  confirmDelete.value = { show: false, response: null }
+}
+
+const handleDeleteCancel = () => {
+  confirmDelete.value = { show: false, response: null }
 }
 
 const setupSubscription = () => {
