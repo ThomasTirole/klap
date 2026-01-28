@@ -59,6 +59,42 @@
           :participant-id="participantId"
         />
 
+        <!-- Sondage à choix multiple -->
+        <PollMultiAnswer
+          v-else-if="activeItem.type === 'poll_multi'"
+          :key="activeItem.id"
+          :item="activeItem"
+          :session-id="session.id"
+          :participant-id="participantId"
+        />
+
+        <!-- Question ouverte -->
+        <OpenAnswer
+          v-else-if="activeItem.type === 'open'"
+          :key="activeItem.id"
+          :item="activeItem"
+          :session-id="session.id"
+          :participant-id="participantId"
+        />
+
+        <!-- Échelle -->
+        <ScaleAnswer
+          v-else-if="activeItem.type === 'scale'"
+          :key="activeItem.id"
+          :item="activeItem"
+          :session-id="session.id"
+          :participant-id="participantId"
+        />
+
+        <!-- Nuage de mots -->
+        <WordcloudAnswer
+          v-else-if="activeItem.type === 'wordcloud'"
+          :key="activeItem.id"
+          :item="activeItem"
+          :session-id="session.id"
+          :participant-id="participantId"
+        />
+
         <!-- Autres types (à venir) -->
         <div v-else class="p-8 bg-gray-50 rounded-lg border-2 border-dashed border-gray-300 text-center">
           <p class="text-gray-600">

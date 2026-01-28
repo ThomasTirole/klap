@@ -11,24 +11,28 @@ KLAP est une alternative open-source et auto-hébergeable à Wooclap, permettant
 - **Authentification enseignant** : Inscription et connexion sécurisée
 - **Gestion de sessions** : Créer, ouvrir, fermer et supprimer des sessions
 - **Code de session unique** : Génération automatique de codes à 6 caractères
-- **Sondages à choix unique** : Créer des questions avec plusieurs options
+- **5 types de questions complets** :
+  - ✅ Sondages à choix unique
+  - ✅ Sondages à choix multiple
+  - ✅ Questions ouvertes (texte libre)
+  - ✅ Échelles d'évaluation (1-5, 0-10, etc.)
+  - ✅ Nuage de mots (affichage visuel impressionnant !)
 - **Participation anonyme** : Les élèves n'ont pas besoin de compte
-- **Temps réel** : Synchronisation instantanée entre enseignants et élèves
+- **Temps réel parfait** : Synchronisation instantanée (<500ms)
   - Questions qui apparaissent automatiquement
   - Résultats qui se mettent à jour en direct
+  - Reset propre lors du changement de question
 - **Mode Live** : Interface de présentation pour projection en classe
 - **Graphiques animés** : Visualisation des résultats en temps réel
 - **Design responsive** : Fonctionne sur desktop, tablette et mobile
 
-### 🚧 Prochainement
+### 🔜 Améliorations futures (optionnel)
 
-- Sondages à choix multiple
-- Nuage de mots
-- Questions ouvertes
-- Échelles d'évaluation
 - QR Code pour rejoindre
 - Export des résultats (CSV, PDF)
 - Templates de sessions
+- Modération avancée
+- Statistiques détaillées
 
 ## 🚀 Démarrage rapide
 

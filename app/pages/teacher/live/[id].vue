@@ -96,6 +96,30 @@
             :item="activeItem"
           />
 
+          <PollMultiResults
+            v-else-if="activeItem.type === 'poll_multi'"
+            :key="activeItem.id"
+            :item="activeItem"
+          />
+
+          <OpenResults
+            v-else-if="activeItem.type === 'open'"
+            :key="activeItem.id"
+            :item="activeItem"
+          />
+
+          <ScaleResults
+            v-else-if="activeItem.type === 'scale'"
+            :key="activeItem.id"
+            :item="activeItem"
+          />
+
+          <WordcloudResults
+            v-else-if="activeItem.type === 'wordcloud'"
+            :key="activeItem.id"
+            :item="activeItem"
+          />
+
           <div v-else class="text-center py-12">
             <p class="text-gray-600">
               L'affichage des résultats pour ce type de question sera bientôt disponible.
