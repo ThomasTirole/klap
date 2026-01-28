@@ -1,8 +1,35 @@
 <script setup lang="ts">
 definePageMeta({ middleware: ['teacher-auth'] })
 
+const supabase = useSupabaseClient()
+const user = useSupabaseUser()
+
 const title = ref('')
 const previewCode = ref(generateJoinCode())
+const loading = ref(false)
+const errorMsg = ref<string | null>(null)
+
+async function createSession() {
+  if (!title.value || !user.value) return
+
+  loading.value = true
+  errorMsg.value = null
+
+  const { error } = await supabase.from('sessions').insert({
+    title: title.value,
+    join_code: previewCode.value,
+    owner_user_id: user.value.id,
+  })
+
+  loading.value = false
+
+  if (error) {
+    errorMsg.value = error.message
+    return
+  }
+
+  navigateTo('/teacher/sessions')
+}
 
 function regenerate() {
   previewCode.value = generateJoinCode()
@@ -26,7 +53,11 @@ function regenerate() {
       <button @click="regenerate" style="margin-left: 10px;">Regénérer</button>
     </div>
 
-    <button disabled>Créer la session</button>
+    <button @click="createSession" :disabled="loading || !title">
+      {{ loading ? 'Création…' : 'Créer la session' }}
+    </button>
+
+    <p v-if="errorMsg" style="color:red;">{{ errorMsg }}</p>
 
     <p style="margin-top:16px;">
       <NuxtLink to="/teacher/sessions">← Retour</NuxtLink>
