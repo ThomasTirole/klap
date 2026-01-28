@@ -143,7 +143,7 @@
                   </svg>
                 </button>
                 <button
-                  @click="deleteItemConfirm(item)"
+                  @click="openDeleteItemConfirm(item)"
                   class="p-2 text-gray-400 hover:text-red-600 transition-colors"
                   title="Supprimer"
                 >
@@ -165,6 +165,29 @@
       @close="showAddQuestion = false"
       @created="handleQuestionCreated"
     />
+
+    <!-- Modal de confirmation de suppression -->
+    <ConfirmModal
+      :show="confirmDeleteItem.show"
+      title="Supprimer la question ?"
+      :message="`Êtes-vous sûr de vouloir supprimer '${confirmDeleteItem.item?.title}' ? Cette action est irréversible.`"
+      confirm-text="Supprimer"
+      cancel-text="Annuler"
+      variant="danger"
+      @confirm="handleDeleteItemConfirm"
+      @cancel="handleDeleteItemCancel"
+    />
+
+    <!-- Modal d'édition -->
+    <PromptModal
+      :show="promptEdit.show"
+      title="Modifier le titre"
+      message="Entrez le nouveau titre de la question :"
+      placeholder="Nouveau titre..."
+      :default-value="promptEdit.item?.title || ''"
+      @confirm="handleEditConfirm"
+      @cancel="handleEditCancel"
+    />
   </div>
 </template>
 
@@ -185,6 +208,14 @@ const items = ref<Item[]>([])
 const loading = ref(true)
 const showAddQuestion = ref(false)
 const editingItem = ref<Item | null>(null)
+const confirmDeleteItem = ref({
+  show: false,
+  item: null as Item | null
+})
+const promptEdit = ref({
+  show: false,
+  item: null as Item | null
+})
 
 const statusLabel = (status: string) => {
   const labels: Record<string, string> = {
@@ -254,34 +285,49 @@ const handleQuestionCreated = async () => {
 }
 
 const editItem = (item: Item) => {
-  // TODO: Implémenter l'édition de question
-  // Pour l'instant, on peut juste permettre de modifier le titre
-  const newTitle = prompt('Nouveau titre :', item.title)
-  if (newTitle && newTitle !== item.title) {
-    updateItemTitle(item.id, newTitle)
+  promptEdit.value = {
+    show: true,
+    item
   }
 }
 
-const updateItemTitle = async (itemId: string, newTitle: string) => {
-  try {
-    await updateItem(itemId, { title: newTitle })
-    items.value = await getSessionItems(sessionId)
-  } catch (error) {
-    console.error('Error updating item:', error)
-    alert('Erreur lors de la modification')
-  }
-}
-
-const deleteItemConfirm = async (item: Item) => {
-  if (confirm(`Êtes-vous sûr de vouloir supprimer "${item.title}" ?`)) {
+const handleEditConfirm = async (newTitle: string) => {
+  if (promptEdit.value.item && newTitle !== promptEdit.value.item.title) {
     try {
-      await deleteItem(item.id)
+      await updateItem(promptEdit.value.item.id, { title: newTitle })
+      items.value = await getSessionItems(sessionId)
+    } catch (error) {
+      console.error('Error updating item:', error)
+    }
+  }
+  promptEdit.value = { show: false, item: null }
+}
+
+const handleEditCancel = () => {
+  promptEdit.value = { show: false, item: null }
+}
+
+const openDeleteItemConfirm = (item: Item) => {
+  confirmDeleteItem.value = {
+    show: true,
+    item
+  }
+}
+
+const handleDeleteItemConfirm = async () => {
+  if (confirmDeleteItem.value.item) {
+    try {
+      await deleteItem(confirmDeleteItem.value.item.id)
       items.value = await getSessionItems(sessionId)
     } catch (error) {
       console.error('Error deleting item:', error)
-      alert('Erreur lors de la suppression')
     }
   }
+  confirmDeleteItem.value = { show: false, item: null }
+}
+
+const handleDeleteItemCancel = () => {
+  confirmDeleteItem.value = { show: false, item: null }
 }
 
 onMounted(async () => {

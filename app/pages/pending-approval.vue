@@ -19,8 +19,8 @@
 
         <div class="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-6">
           <p class="text-sm text-blue-800">
-            <strong>Vous serez notifié par email</strong> dès que votre compte sera approuvé.
-            Cela peut prendre quelques heures.
+            Votre demande est en cours de traitement.
+            Cela peut prendre quelques heures. Revenez un peu plus tard pour vérifier votre accès.
           </p>
         </div>
 

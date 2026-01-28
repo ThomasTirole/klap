@@ -83,7 +83,7 @@
             <p class="text-2xl font-mono font-bold text-indigo-600">{{ session.join_code }}</p>
           </div>
 
-          <div class="flex gap-2">
+          <div class="flex gap-2 relative">
             <NuxtLink
               :to="`/teacher/sessions/${session.id}`"
               class="flex-1 px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-medium rounded-lg transition-colors text-center"
@@ -91,33 +91,43 @@
               Ouvrir
             </NuxtLink>
             <button
-              @click="toggleMenu(session.id)"
-              class="px-4 py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 text-sm font-medium rounded-lg transition-colors relative"
+              @click.stop="toggleMenu(session.id)"
+              class="px-4 py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 text-sm font-medium rounded-lg transition-colors"
             >
               ⋯
-              <!-- Menu déroulant -->
-              <div
-                v-if="openMenuId === session.id"
-                class="absolute right-0 top-full mt-2 w-48 bg-white rounded-lg shadow-lg border border-gray-200 py-2 z-10"
-              >
-                <button
-                  @click.stop="duplicateSession(session.id)"
-                  class="w-full px-4 py-2 text-left text-sm text-gray-700 hover:bg-gray-100"
-                >
-                  Dupliquer
-                </button>
-                <button
-                  @click.stop="deleteSessionConfirm(session)"
-                  class="w-full px-4 py-2 text-left text-sm text-red-600 hover:bg-red-50"
-                >
-                  Supprimer
-                </button>
-              </div>
             </button>
+
+            <!-- Menu déroulant (en dehors du bouton) -->
+            <div
+              v-if="openMenuId === session.id"
+              class="absolute right-0 top-full mt-1 w-48 bg-white rounded-lg shadow-xl border border-gray-200 py-2 z-50"
+            >
+              <button
+                @click.stop="openDeleteConfirm(session)"
+                class="w-full px-4 py-2 text-left text-sm text-red-600 hover:bg-red-50 transition-colors"
+              >
+                <svg class="w-4 h-4 inline mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                </svg>
+                Supprimer
+              </button>
+            </div>
           </div>
         </div>
       </div>
     </div>
+
+    <!-- Modal de confirmation de suppression -->
+    <ConfirmModal
+      :show="confirmDelete.show"
+      title="Supprimer la session ?"
+      :message="`Êtes-vous sûr de vouloir supprimer '${confirmDelete.session?.title}' ? Cette action est irréversible.`"
+      confirm-text="Supprimer"
+      cancel-text="Annuler"
+      variant="danger"
+      @confirm="handleDeleteConfirm"
+      @cancel="handleDeleteCancel"
+    />
   </div>
 </template>
 
@@ -135,6 +145,10 @@ const router = useRouter()
 const sessions = ref<Session[]>([])
 const loading = ref(true)
 const openMenuId = ref<string | null>(null)
+const confirmDelete = ref({
+  show: false,
+  session: null as Session | null
+})
 
 const handleLogout = async () => {
   await signOut()
@@ -154,29 +168,32 @@ const toggleMenu = (sessionId: string) => {
   openMenuId.value = openMenuId.value === sessionId ? null : sessionId
 }
 
-const duplicateSession = async (sessionId: string) => {
-  // TODO: Implémenter la duplication
-  console.log('Duplicate session:', sessionId)
-  alert('Fonctionnalité de duplication à venir')
-  openMenuId.value = null
-}
-
-const deleteSessionConfirm = async (session: Session) => {
-  if (confirm(`Êtes-vous sûr de vouloir supprimer "${session.title}" ?`)) {
-    try {
-      await deleteSession(session.id)
-      // Recharger les sessions
-      sessions.value = await getUserSessions()
-    } catch (error) {
-      console.error('Error deleting session:', error)
-      alert('Erreur lors de la suppression')
-    }
+const openDeleteConfirm = (session: Session) => {
+  confirmDelete.value = {
+    show: true,
+    session
   }
   openMenuId.value = null
 }
 
+const handleDeleteConfirm = async () => {
+  if (confirmDelete.value.session) {
+    try {
+      await deleteSession(confirmDelete.value.session.id)
+      sessions.value = await getUserSessions()
+    } catch (error) {
+      console.error('Error deleting session:', error)
+    }
+  }
+  confirmDelete.value = { show: false, session: null }
+}
+
+const handleDeleteCancel = () => {
+  confirmDelete.value = { show: false, session: null }
+}
+
 // Fermer le menu au clic extérieur
-const handleClickOutside = () => {
+const handleClickOutside = (e: MouseEvent) => {
   openMenuId.value = null
 }
 
