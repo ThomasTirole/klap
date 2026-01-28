@@ -2,6 +2,11 @@
 definePageMeta({ middleware: ['teacher-auth'] })
 
 const title = ref('')
+const previewCode = ref(generateJoinCode())
+
+function regenerate() {
+  previewCode.value = generateJoinCode()
+}
 </script>
 
 <template>
@@ -14,6 +19,12 @@ const title = ref('')
         placeholder="Ex: UX – Accessibilité"
         style="display:block; width:100%; margin:8px 0;"
     />
+
+    <div style="margin: 12px 0;">
+      <strong>Code (preview):</strong>
+      <code style="margin-left: 8px;">{{ previewCode }}</code>
+      <button @click="regenerate" style="margin-left: 10px;">Regénérer</button>
+    </div>
 
     <button disabled>Créer la session</button>
 
