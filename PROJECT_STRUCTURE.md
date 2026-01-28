@@ -4,36 +4,39 @@
 
 ```
 klap/
-├── app/                    # Dossier principal de l'application
-│   └── app.vue            # Point d'entrée de l'application
+├── app/                    # Dossier principal de l'application (Nuxt 4)
+│   ├── app.vue            # Point d'entrée de l'application
+│   ├── components/        # Composants Vue réutilisables
+│   │   ├── session/      # Composants liés aux sessions (à créer)
+│   │   ├── item/         # Composants liés aux questions (à créer)
+│   │   ├── student/      # Composants interface élève (à créer)
+│   │   └── teacher/      # Composants interface enseignant (à créer)
+│   ├── composables/       # Composables Vue (logique réutilisable)
+│   │   ├── useSupabase.ts # Client Supabase
+│   │   ├── useAuth.ts    # Authentification
+│   │   └── useSession.ts # Gestion sessions
+│   ├── middleware/        # Middleware Nuxt
+│   │   └── auth.ts       # Protection routes enseignant
+│   └── pages/             # Routes de l'application (auto-routing Nuxt)
+│       ├── index.vue     # Page d'accueil
+│       ├── login.vue     # Connexion enseignant
+│       ├── signup.vue    # Inscription enseignant
+│       ├── join.vue      # Rejoindre une session
+│       ├── teacher/      # Pages enseignant
+│       │   ├── index.vue # Dashboard
+│       │   └── sessions/
+│       │       ├── new.vue   # Créer session
+│       │       └── [id].vue  # Détail session
+│       └── student/      # Pages élève
+│           └── [code].vue # Session élève
 ├── assets/                # Fichiers statiques (images, CSS custom)
-├── components/            # Composants Vue réutilisables
-│   ├── session/          # Composants liés aux sessions (à créer)
-│   ├── item/             # Composants liés aux questions (à créer)
-│   ├── student/          # Composants interface élève (à créer)
-│   └── teacher/          # Composants interface enseignant (à créer)
-├── composables/           # Composables Vue (logique réutilisable)
-│   └── useSupabase.ts    # Client Supabase
 ├── database/              # Schémas et migrations SQL
 │   └── migrations/
-├── layouts/               # Layouts Nuxt (structure de page)
-│   ├── default.vue       # Layout par défaut (à créer)
-│   ├── teacher.vue       # Layout enseignant (à créer)
-│   └── student.vue       # Layout élève (à créer)
-├── pages/                 # Routes de l'application (auto-routing Nuxt)
-│   ├── index.vue         # Page d'accueil (à créer)
-│   ├── login.vue         # Connexion enseignant (à créer)
-│   ├── join.vue          # Rejoindre une session (à créer)
-│   ├── teacher/          # Pages enseignant (à créer)
-│   │   ├── index.vue     # Dashboard
-│   │   ├── sessions/     # Gestion des sessions
-│   │   └── live/[id].vue # Présentation live
-│   └── student/          # Pages élève (à créer)
-│       └── [code].vue    # Session élève
+│       └── 001_initial_schema.sql
 ├── server/                # Code côté serveur (API)
 │   └── api/              # API routes (si nécessaire)
 ├── types/                 # Types TypeScript
-│   └── database.ts       # Types pour le schéma DB (à créer)
+│   └── database.ts       # Types pour le schéma DB
 ├── public/                # Fichiers publics statiques
 ├── .env                   # Variables d'environnement (non versionnée)
 ├── .env.example          # Template des variables d'environnement
