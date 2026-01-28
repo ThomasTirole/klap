@@ -1,75 +1,120 @@
-# Nuxt Minimal Starter
+# KLAP 🎯
 
-Look at the [Nuxt documentation](https://nuxt.com/docs/getting-started/introduction) to learn more.
+**Plateforme d'interaction en classe en temps réel**
 
-## Setup
+KLAP est une alternative open-source et auto-hébergeable à Wooclap, permettant aux enseignants de créer des sessions interactives avec leurs élèves en temps réel.
 
-Make sure to install dependencies:
+## ✨ Fonctionnalités
+
+### ✅ Disponibles maintenant
+
+- **Authentification enseignant** : Inscription et connexion sécurisée
+- **Gestion de sessions** : Créer, ouvrir, fermer et supprimer des sessions
+- **Code de session unique** : Génération automatique de codes à 6 caractères
+- **Sondages à choix unique** : Créer des questions avec plusieurs options
+- **Participation anonyme** : Les élèves n'ont pas besoin de compte
+- **Temps réel** : Synchronisation instantanée entre enseignants et élèves
+  - Questions qui apparaissent automatiquement
+  - Résultats qui se mettent à jour en direct
+- **Mode Live** : Interface de présentation pour projection en classe
+- **Graphiques animés** : Visualisation des résultats en temps réel
+- **Design responsive** : Fonctionne sur desktop, tablette et mobile
+
+### 🚧 Prochainement
+
+- Sondages à choix multiple
+- Nuage de mots
+- Questions ouvertes
+- Échelles d'évaluation
+- QR Code pour rejoindre
+- Export des résultats (CSV, PDF)
+- Templates de sessions
+
+## 🚀 Démarrage rapide
+
+### Prérequis
+
+- Node.js 18+
+- npm ou yarn
+- Compte Supabase (gratuit)
+
+### Installation
 
 ```bash
-# npm
+# 1. Cloner le repo
+git clone https://github.com/votre-username/klap.git
+cd klap
+
+# 2. Installer les dépendances
 npm install
 
-# pnpm
-pnpm install
+# 3. Configurer les variables d'environnement
+cp .env.example .env
+# Éditer .env avec vos credentials Supabase
 
-# yarn
-yarn install
+# 4. Exécuter le schéma SQL dans Supabase
+# Aller sur https://app.supabase.com
+# SQL Editor → Copier/coller database/migrations/001_initial_schema.sql
 
-# bun
-bun install
-```
-
-## Development Server
-
-Start the development server on `http://localhost:3000`:
-
-```bash
-# npm
+# 5. Lancer le serveur de développement
 npm run dev
-
-# pnpm
-pnpm dev
-
-# yarn
-yarn dev
-
-# bun
-bun run dev
 ```
 
-## Production
+Accédez à `http://localhost:3000`
 
-Build the application for production:
+## 📖 Documentation
 
-```bash
-# npm
-npm run build
+- **[USAGE_GUIDE.md](./USAGE_GUIDE.md)** : Guide d'utilisation complet
+- **[PROGRESS.md](./PROGRESS.md)** : État d'avancement du projet
+- **[PROJECT_STRUCTURE.md](./PROJECT_STRUCTURE.md)** : Architecture du code
+- **[VISION.md](./VISION.md)** : Vision et objectifs du projet
 
-# pnpm
-pnpm build
+## 🛠️ Stack Technique
 
-# yarn
-yarn build
+- **Frontend** : Nuxt 3 + Vue 3 + TypeScript
+- **Styling** : Tailwind CSS
+- **Backend** : Supabase (PostgreSQL + Realtime + Auth)
+- **Temps Réel** : Supabase Realtime (WebSockets)
 
-# bun
-bun run build
-```
+## 🎯 Utilisation
 
-Locally preview production build:
+### Pour l'enseignant
 
-```bash
-# npm
-npm run preview
+1. Créez un compte sur `/signup`
+2. Créez une session sur `/teacher`
+3. Ajoutez des questions
+4. Ouvrez la session
+5. Lancez le Mode Live et projetez-le
+6. Les élèves rejoignent avec le code
 
-# pnpm
-pnpm preview
+### Pour les élèves
 
-# yarn
-yarn preview
+1. Allez sur `/join`
+2. Entrez le code à 6 caractères
+3. Répondez aux questions quand elles apparaissent
+4. Voyez les résultats (si activé)
 
-# bun
-bun run preview
-```
+## 📸 Captures d'écran
 
-Check out the [deployment documentation](https://nuxt.com/docs/getting-started/deployment) for more information.
+_À venir_
+
+## 🤝 Contribution
+
+Les contributions sont les bienvenues ! N'hésitez pas à :
+- Ouvrir des issues pour signaler des bugs
+- Proposer des nouvelles fonctionnalités
+- Soumettre des pull requests
+
+## 📝 License
+
+MIT License - Voir [LICENSE](./LICENSE) pour plus de détails
+
+## 💬 Support
+
+Pour toute question ou problème :
+- Ouvrir une issue sur GitHub
+- Consulter la documentation dans `/docs`
+
+---
+
+**Fait avec ❤️ pour l'éducation**
