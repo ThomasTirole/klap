@@ -59,6 +59,10 @@ function regenerate() {
 
     <p v-if="errorMsg" style="color:red;">{{ errorMsg }}</p>
 
+    <p>
+      User id: <code>{{ user?.id || 'NULL (pas connecté)' }}</code>
+    </p>
+
     <p style="margin-top:16px;">
       <NuxtLink to="/teacher/sessions">← Retour</NuxtLink>
     </p>
