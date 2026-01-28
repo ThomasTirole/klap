@@ -169,6 +169,29 @@ export const useSession = () => {
     return data || []
   }
 
+  // Mettre à jour un item
+  const updateItem = async (itemId: string, updates: Partial<Item>) => {
+    const { data, error } = await supabase
+      .from('items')
+      .update(updates)
+      .eq('id', itemId)
+      .select()
+      .single()
+
+    if (error) throw error
+    return data
+  }
+
+  // Supprimer un item
+  const deleteItem = async (itemId: string) => {
+    const { error } = await supabase
+      .from('items')
+      .delete()
+      .eq('id', itemId)
+
+    if (error) throw error
+  }
+
   return {
     createSession,
     getSession,
@@ -177,6 +200,8 @@ export const useSession = () => {
     updateSession,
     deleteSession,
     addItem,
+    updateItem,
+    deleteItem,
     getSessionItems,
   }
 }

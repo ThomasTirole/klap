@@ -84,11 +84,35 @@
           </div>
 
           <div class="flex gap-2">
-            <button class="flex-1 px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-medium rounded-lg transition-colors">
+            <NuxtLink
+              :to="`/teacher/sessions/${session.id}`"
+              class="flex-1 px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-medium rounded-lg transition-colors text-center"
+            >
               Ouvrir
-            </button>
-            <button class="px-4 py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 text-sm font-medium rounded-lg transition-colors">
+            </NuxtLink>
+            <button
+              @click="toggleMenu(session.id)"
+              class="px-4 py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 text-sm font-medium rounded-lg transition-colors relative"
+            >
               ⋯
+              <!-- Menu déroulant -->
+              <div
+                v-if="openMenuId === session.id"
+                class="absolute right-0 top-full mt-2 w-48 bg-white rounded-lg shadow-lg border border-gray-200 py-2 z-10"
+              >
+                <button
+                  @click.stop="duplicateSession(session.id)"
+                  class="w-full px-4 py-2 text-left text-sm text-gray-700 hover:bg-gray-100"
+                >
+                  Dupliquer
+                </button>
+                <button
+                  @click.stop="deleteSessionConfirm(session)"
+                  class="w-full px-4 py-2 text-left text-sm text-red-600 hover:bg-red-50"
+                >
+                  Supprimer
+                </button>
+              </div>
             </button>
           </div>
         </div>
@@ -105,11 +129,12 @@ definePageMeta({
 })
 
 const { user, signOut } = useAuth()
-const supabase = useSupabase()
+const { getUserSessions, deleteSession } = useSession()
 const router = useRouter()
 
 const sessions = ref<Session[]>([])
 const loading = ref(true)
+const openMenuId = ref<string | null>(null)
 
 const handleLogout = async () => {
   await signOut()
@@ -125,16 +150,50 @@ const statusLabel = (status: string) => {
   return labels[status] || status
 }
 
+const toggleMenu = (sessionId: string) => {
+  openMenuId.value = openMenuId.value === sessionId ? null : sessionId
+}
+
+const duplicateSession = async (sessionId: string) => {
+  // TODO: Implémenter la duplication
+  console.log('Duplicate session:', sessionId)
+  alert('Fonctionnalité de duplication à venir')
+  openMenuId.value = null
+}
+
+const deleteSessionConfirm = async (session: Session) => {
+  if (confirm(`Êtes-vous sûr de vouloir supprimer "${session.title}" ?`)) {
+    try {
+      await deleteSession(session.id)
+      // Recharger les sessions
+      sessions.value = await getUserSessions()
+    } catch (error) {
+      console.error('Error deleting session:', error)
+      alert('Erreur lors de la suppression')
+    }
+  }
+  openMenuId.value = null
+}
+
+// Fermer le menu au clic extérieur
+const handleClickOutside = () => {
+  openMenuId.value = null
+}
+
+onMounted(() => {
+  document.addEventListener('click', handleClickOutside)
+})
+
+onUnmounted(() => {
+  document.removeEventListener('click', handleClickOutside)
+})
+
 onMounted(async () => {
   loading.value = true
   try {
-    const { data, error } = await supabase
-      .from('sessions')
-      .select('*')
-      .order('created_at', { ascending: false })
-
-    if (error) throw error
-    sessions.value = data || []
+    // Utiliser getUserSessions pour filtrer par owner_user_id
+    const { getUserSessions } = useSession()
+    sessions.value = await getUserSessions()
   } catch (error) {
     console.error('Error loading sessions:', error)
   } finally {

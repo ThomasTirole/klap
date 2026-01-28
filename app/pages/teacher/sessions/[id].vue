@@ -133,12 +133,20 @@
                 </div>
               </div>
               <div class="flex gap-2">
-                <button class="p-2 text-gray-400 hover:text-indigo-600 transition-colors">
+                <button
+                  @click="editItem(item)"
+                  class="p-2 text-gray-400 hover:text-indigo-600 transition-colors"
+                  title="Modifier"
+                >
                   <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" />
                   </svg>
                 </button>
-                <button class="p-2 text-gray-400 hover:text-red-600 transition-colors">
+                <button
+                  @click="deleteItemConfirm(item)"
+                  class="p-2 text-gray-400 hover:text-red-600 transition-colors"
+                  title="Supprimer"
+                >
                   <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
                   </svg>
@@ -169,13 +177,14 @@ definePageMeta({
 
 const route = useRoute()
 const router = useRouter()
-const { getSession, updateSession, deleteSession, getSessionItems } = useSession()
+const { getSession, updateSession, deleteSession, getSessionItems, deleteItem, updateItem } = useSession()
 
 const sessionId = route.params.id as string
 const session = ref<Session | null>(null)
 const items = ref<Item[]>([])
 const loading = ref(true)
 const showAddQuestion = ref(false)
+const editingItem = ref<Item | null>(null)
 
 const statusLabel = (status: string) => {
   const labels: Record<string, string> = {
@@ -241,6 +250,37 @@ const handleQuestionCreated = async () => {
     items.value = await getSessionItems(sessionId)
   } catch (error) {
     console.error('Error reloading items:', error)
+  }
+}
+
+const editItem = (item: Item) => {
+  // TODO: Implémenter l'édition de question
+  // Pour l'instant, on peut juste permettre de modifier le titre
+  const newTitle = prompt('Nouveau titre :', item.title)
+  if (newTitle && newTitle !== item.title) {
+    updateItemTitle(item.id, newTitle)
+  }
+}
+
+const updateItemTitle = async (itemId: string, newTitle: string) => {
+  try {
+    await updateItem(itemId, { title: newTitle })
+    items.value = await getSessionItems(sessionId)
+  } catch (error) {
+    console.error('Error updating item:', error)
+    alert('Erreur lors de la modification')
+  }
+}
+
+const deleteItemConfirm = async (item: Item) => {
+  if (confirm(`Êtes-vous sûr de vouloir supprimer "${item.title}" ?`)) {
+    try {
+      await deleteItem(item.id)
+      items.value = await getSessionItems(sessionId)
+    } catch (error) {
+      console.error('Error deleting item:', error)
+      alert('Erreur lors de la suppression')
+    }
   }
 }
 
