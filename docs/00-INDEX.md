@@ -52,6 +52,7 @@ Si c'est votre première fois :
 | **[29-CORRECTIONS_FINALES.md](./29-CORRECTIONS_FINALES.md)** | ✅ Fix sondages/wordcloud + RLS setup |
 | **[30-DEBUG_REDIRECTION.md](./30-DEBUG_REDIRECTION.md)** | 🔍 Guide diagnostic redirection |
 | **[31-CONFIGURATION_FINALE.md](./31-CONFIGURATION_FINALE.md)** | 🎉 **Configuration complète et validée** |
+| **[32-AMELIORATION_UX_DROPDOWN.md](./32-AMELIORATION_UX_DROPDOWN.md)** | 🎨 Dropdown moderne avec icônes |
 
 ---
 
@@ -118,6 +119,7 @@ docs/
 ├── 29-CORRECTIONS_FINALES.md      ✅ Fix final sondages/wordcloud
 ├── 30-DEBUG_REDIRECTION.md        🔍 Diagnostic redirection
 ├── 31-CONFIGURATION_FINALE.md     🎉 Configuration validée
+├── 32-AMELIORATION_UX_DROPDOWN.md 🎨 Dropdown moderne
 │
 └── 30-ROADMAP.md                  🔮 Développements futurs
 ```

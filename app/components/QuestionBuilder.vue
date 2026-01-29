@@ -19,16 +19,7 @@
           <label class="block text-sm font-medium text-gray-700 mb-2">
             Type de question
           </label>
-          <select
-            v-model="form.type"
-            class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent outline-none transition"
-          >
-            <option value="poll_single">Sondage - Choix unique</option>
-            <option value="poll_multi">Sondage - Choix multiple</option>
-            <option value="open">Question ouverte</option>
-            <option value="scale">Échelle d'évaluation</option>
-            <option value="wordcloud">Nuage de mots</option>
-          </select>
+          <QuestionTypeSelector v-model="form.type" />
         </div>
 
         <!-- Titre -->
