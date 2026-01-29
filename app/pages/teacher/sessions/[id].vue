@@ -136,9 +136,7 @@
                     <h4 class="font-semibold text-gray-900">{{ item.title }}</h4>
                     <p v-if="item.prompt" class="text-sm text-gray-600 mt-1">{{ item.prompt }}</p>
                   </div>
-                  <span class="px-2 py-1 text-xs font-medium bg-gray-100 text-gray-700 rounded">
-                    {{ itemTypeLabel(item.type) }}
-                  </span>
+                  <QuestionTypeBadge :type="item.type" />
                 </div>
               </div>
               <div class="flex gap-2">

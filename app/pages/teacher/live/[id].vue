@@ -52,27 +52,17 @@
       <!-- Contrôles -->
       <div v-else class="space-y-6">
         <!-- Sélection de question -->
-        <div class="bg-white bg-opacity-10 backdrop-blur-sm rounded-xl border border-white border-opacity-20 p-6">
+        <div class="bg-white bg-opacity-10 backdrop-blur-sm rounded-xl border border-white border-opacity-20 p-6 relative z-50">
           <div class="flex items-center justify-between gap-4">
             <div class="flex-1">
               <label class="block text-sm font-medium text-gray-200 mb-2">
                 Question active
               </label>
-              <select
+              <ActiveQuestionSelector
                 v-model="selectedItemId"
-                @change="activateQuestion"
-                class="w-full px-4 py-3 bg-white bg-opacity-20 border border-white border-opacity-30 rounded-lg text-white focus:ring-2 focus:ring-white focus:ring-opacity-50 outline-none transition"
-              >
-                <option value="" class="text-gray-900">Aucune question active</option>
-                <option
-                  v-for="(item, index) in items"
-                  :key="item.id"
-                  :value="item.id"
-                  class="text-gray-900"
-                >
-                  {{ index + 1 }}. {{ item.title }}
-                </option>
-              </select>
+                :items="items"
+                @update:model-value="activateQuestion"
+              />
             </div>
 
             <!-- Navigation -->
