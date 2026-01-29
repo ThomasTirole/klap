@@ -16,9 +16,20 @@
             <h1 class="text-xl font-bold text-white">KLAP</h1>
             <span v-if="session" class="text-gray-300">{{ session.title }}</span>
           </div>
-          <div v-if="session" class="text-right">
-            <p class="text-sm text-gray-300">Code d'accès</p>
-            <p class="text-2xl font-mono font-bold text-white">{{ session.join_code }}</p>
+          <div v-if="session" class="flex items-center gap-4">
+            <button
+              @click="showQRCode = true"
+              class="px-4 py-2 bg-white bg-opacity-20 hover:bg-opacity-30 text-white rounded-lg transition-colors flex items-center gap-2"
+            >
+              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v1m6 11h2m-6 0h-2v4m0-11v3m0 0h.01M12 12h4.01M16 20h4M4 12h4m12 0h.01M5 8h2a1 1 0 001-1V5a1 1 0 00-1-1H5a1 1 0 00-1 1v2a1 1 0 001 1zm12 0h2a1 1 0 001-1V5a1 1 0 00-1-1h-2a1 1 0 00-1 1v2a1 1 0 001 1zM5 20h2a1 1 0 001-1v-2a1 1 0 00-1-1H5a1 1 0 00-1 1v2a1 1 0 001 1z" />
+              </svg>
+              QR Code
+            </button>
+            <div class="text-right">
+              <p class="text-sm text-gray-300">Code d'accès</p>
+              <p class="text-2xl font-mono font-bold text-white">{{ session.join_code }}</p>
+            </div>
           </div>
         </div>
       </div>
@@ -106,6 +117,7 @@
             v-else-if="activeItem.type === 'open'"
             :key="activeItem.id"
             :item="activeItem"
+            :show-delete-buttons="true"
           />
 
           <ScaleResults
@@ -137,6 +149,70 @@
         </div>
       </div>
     </div>
+
+    <!-- Modal QR Code -->
+    <Teleport to="body">
+      <Transition
+        enter-active-class="transition-opacity duration-200"
+        enter-from-class="opacity-0"
+        enter-to-class="opacity-100"
+        leave-active-class="transition-opacity duration-200"
+        leave-from-class="opacity-100"
+        leave-to-class="opacity-0"
+      >
+        <div
+          v-if="showQRCode && session"
+          class="fixed inset-0 bg-black bg-opacity-75 z-50 flex items-center justify-center p-4"
+          @click="showQRCode = false"
+        >
+          <Transition
+            enter-active-class="transition-all duration-200"
+            enter-from-class="opacity-0 scale-95"
+            enter-to-class="opacity-100 scale-100"
+            leave-active-class="transition-all duration-200"
+            leave-from-class="opacity-100 scale-100"
+            leave-to-class="opacity-0 scale-95"
+          >
+            <div
+              v-if="showQRCode"
+              @click.stop
+              class="bg-white rounded-2xl shadow-2xl p-8 max-w-md w-full"
+            >
+              <!-- Titre -->
+              <div class="text-center mb-6">
+                <h3 class="text-2xl font-bold text-gray-900 mb-2">Rejoindre la session</h3>
+                <p class="text-gray-600">{{ session.title }}</p>
+              </div>
+
+              <!-- QR Code -->
+              <QRCodeDisplay
+                :url="joinUrl"
+                :code="session.join_code"
+                :size="300"
+              />
+
+              <!-- Info -->
+              <div class="mt-6 p-4 bg-indigo-50 rounded-lg">
+                <p class="text-sm text-indigo-800 text-center">
+                  <svg class="w-5 h-5 inline mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                  </svg>
+                  Scannez avec un téléphone pour rejoindre
+                </p>
+              </div>
+
+              <!-- Bouton fermer -->
+              <button
+                @click="showQRCode = false"
+                class="mt-6 w-full px-4 py-3 bg-gray-100 hover:bg-gray-200 text-gray-700 font-medium rounded-lg transition-colors"
+              >
+                Fermer
+              </button>
+            </div>
+          </Transition>
+        </div>
+      </Transition>
+    </Teleport>
   </div>
 </template>
 
@@ -156,6 +232,13 @@ const items = ref<Item[]>([])
 const activeItem = ref<Item | null>(null)
 const loading = ref(true)
 const selectedItemId = ref('')
+const showQRCode = ref(false)
+
+const config = useRuntimeConfig()
+const joinUrl = computed(() => {
+  if (!session.value) return ''
+  return `${config.public.siteUrl || 'https://klap-steel.vercel.app'}/student/${session.value.join_code}`
+})
 
 const currentIndex = computed(() => {
   if (!selectedItemId.value || items.value.length === 0) return -1

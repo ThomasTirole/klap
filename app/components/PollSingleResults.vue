@@ -131,6 +131,11 @@ const handleNewResponse = (response: Response) => {
   }
 }
 
+const handleDeletedResponse = () => {
+  // Recharger les résultats après suppression
+  loadResults()
+}
+
 const setupSubscription = () => {
   console.log('[Teacher] Setting up subscription for item:', props.item.id)
 
@@ -146,8 +151,11 @@ const setupSubscription = () => {
   // Charger les résultats
   loadResults()
 
-  // S'abonner aux nouvelles réponses
-  realtimeChannel = subscribeToItemResponses(props.item.id, handleNewResponse)
+  // S'abonner aux nouvelles réponses et suppressions
+  realtimeChannel = subscribeToItemResponses(props.item.id, {
+    onInsert: handleNewResponse,
+    onDelete: handleDeletedResponse
+  })
 }
 
 // Réinitialiser quand la question change
