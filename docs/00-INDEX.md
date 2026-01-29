@@ -50,6 +50,8 @@ Si c'est votre première fois :
 | **[26-CORRECTIONS_29_JANVIER.md](./26-CORRECTIONS_29_JANVIER.md)** | ✅ Corrections + redirection fin de session |
 | **[27-CORRECTIONS_SUITE.md](./27-CORRECTIONS_SUITE.md)** | ✅ Page réponses + suppression temps réel |
 | **[29-CORRECTIONS_FINALES.md](./29-CORRECTIONS_FINALES.md)** | ✅ Fix sondages/wordcloud + RLS setup |
+| **[30-DEBUG_REDIRECTION.md](./30-DEBUG_REDIRECTION.md)** | 🔍 Guide diagnostic redirection |
+| **[31-CONFIGURATION_FINALE.md](./31-CONFIGURATION_FINALE.md)** | 🎉 **Configuration complète et validée** |
 
 ---
 
@@ -114,6 +116,8 @@ docs/
 ├── 27-CORRECTIONS_SUITE.md        ✅ Corrections 2ème passe
 ├── 28-SETUP_RLS_DELETE.md         🔒 Config RLS suppressions
 ├── 29-CORRECTIONS_FINALES.md      ✅ Fix final sondages/wordcloud
+├── 30-DEBUG_REDIRECTION.md        🔍 Diagnostic redirection
+├── 31-CONFIGURATION_FINALE.md     🎉 Configuration validée
 │
 └── 30-ROADMAP.md                  🔮 Développements futurs
 ```

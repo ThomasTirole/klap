@@ -183,19 +183,30 @@ onMounted(async () => {
       // S'abonner aux changements de session (question active, statut)
       realtimeChannel = subscribeToSession(sessionData.id, (updatedSession) => {
         const previousStatus = session.value?.status
+        console.log('[Student] Session update received:', {
+          previousStatus,
+          newStatus: updatedSession.status,
+          previousItemId: activeItem.value?.id,
+          newItemId: updatedSession.active_item_id
+        })
+
         session.value = updatedSession
 
         // Mettre à jour la question active quand elle change
         if (updatedSession.active_item_id !== activeItem.value?.id) {
+          console.log('[Student] Active item changed, updating...')
           updateActiveItem(updatedSession.active_item_id)
         }
 
         // Rediriger si la session vient d'être fermée
         if (previousStatus === 'open' && updatedSession.status === 'closed') {
-          console.log('[Student] Session closed, redirecting to end page...')
+          console.log('[Student] Session closed detected! Redirecting to end page...')
           setTimeout(() => {
+            console.log('[Student] Executing redirect now...')
             router.push('/student/end')
           }, 1000) // Délai de 1 seconde pour laisser voir le message
+        } else {
+          console.log('[Student] No redirect needed. Previous:', previousStatus, 'New:', updatedSession.status)
         }
       })
     }
