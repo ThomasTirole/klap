@@ -160,6 +160,13 @@ const handleNewResponse = (response: Response) => {
   }
 }
 
+const handleDeletedResponse = (response: Response) => {
+  console.log('[OpenResults] Response deleted via realtime:', response.id)
+  // Retirer de la liste
+  responses.value = responses.value.filter(r => r.id !== response.id)
+  updateLastUpdate()
+}
+
 const openDeleteConfirm = (response: OpenResponse) => {
   confirmDelete.value = {
     show: true,
@@ -170,19 +177,28 @@ const openDeleteConfirm = (response: OpenResponse) => {
 const handleDeleteConfirm = async () => {
   if (!confirmDelete.value.response) return
 
+  console.log('[OpenResults] Deleting response:', confirmDelete.value.response.id)
+
   try {
-    const { error } = await supabase
+    const { error, data } = await supabase
       .from('responses')
       .delete()
       .eq('id', confirmDelete.value.response.id)
+      .select()
 
-    if (error) throw error
+    console.log('[OpenResults] Delete result:', { data, error })
 
-    // Retirer de la liste
-    responses.value = responses.value.filter(r => r.id !== confirmDelete.value.response!.id)
-    updateLastUpdate()
+    if (error) {
+      console.error('[OpenResults] Delete error:', error)
+      throw error
+    }
+
+    console.log('[OpenResults] Successfully deleted, reloading responses...')
+    // Recharger complètement depuis la base pour garantir la persistance
+    await loadResponses()
   } catch (error) {
-    console.error('Error deleting response:', error)
+    console.error('[OpenResults] Error deleting response:', error)
+    alert('Erreur lors de la suppression : ' + JSON.stringify(error))
   }
 
   confirmDelete.value = { show: false, response: null }
@@ -203,7 +219,10 @@ const setupSubscription = () => {
 
   loadResponses()
 
-  realtimeChannel = subscribeToItemResponses(props.item.id, handleNewResponse)
+  realtimeChannel = subscribeToItemResponses(props.item.id, {
+    onInsert: handleNewResponse,
+    onDelete: handleDeletedResponse
+  })
 }
 
 watch(() => props.item.id, () => {

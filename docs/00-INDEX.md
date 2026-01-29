@@ -28,6 +28,7 @@ Si c'est votre première fois :
 | **[04-SETUP_REALTIME.md](./04-SETUP_REALTIME.md)** | Configuration du temps réel Supabase |
 | **[05-SETUP_APPROBATION.md](./05-SETUP_APPROBATION.md)** | Système d'approbation des enseignants |
 | **[06-CONFIG_SUPABASE_URL.md](./06-CONFIG_SUPABASE_URL.md)** | Configuration URL pour Vercel |
+| **[28-SETUP_RLS_DELETE.md](./28-SETUP_RLS_DELETE.md)** | 🔒 Configuration RLS pour suppressions |
 
 ### 📊 État du projet
 
@@ -45,6 +46,10 @@ Si c'est votre première fois :
 | **[21-CORRECTIFS_ROUND_2.md](./21-CORRECTIFS_ROUND_2.md)** | Reset questions, subscriptions |
 | **[22-CORRECTIFS_ROUND_3.md](./22-CORRECTIFS_ROUND_3.md)** | Approbation, sessions filtrées |
 | **[23-CORRECTIFS_ROUND_4.md](./23-CORRECTIFS_ROUND_4.md)** | Modals design, menu fixes |
+| **[25-BUGS_A_CORRIGER.md](./25-BUGS_A_CORRIGER.md)** | 🐛 Bugs identifiés (wordcloud, suppression) |
+| **[26-CORRECTIONS_29_JANVIER.md](./26-CORRECTIONS_29_JANVIER.md)** | ✅ Corrections + redirection fin de session |
+| **[27-CORRECTIONS_SUITE.md](./27-CORRECTIONS_SUITE.md)** | ✅ Page réponses + suppression temps réel |
+| **[29-CORRECTIONS_FINALES.md](./29-CORRECTIONS_FINALES.md)** | ✅ Fix sondages/wordcloud + RLS setup |
 
 ---
 
@@ -71,7 +76,13 @@ Si c'est votre première fois :
 ### Pour comprendre les corrections
 
 ```
-20 → 21 → 22 → 23 (dans l'ordre chronologique)
+20 → 21 → 22 → 23 → 25 → 26 → 27 → 29 (dans l'ordre chronologique)
+```
+
+### Pour configurer les suppressions
+
+```
+28-SETUP_RLS_DELETE (configuration RLS requise)
 ```
 
 ---
@@ -89,6 +100,7 @@ docs/
 ├── 04-SETUP_REALTIME.md           Setup temps réel
 ├── 05-SETUP_APPROBATION.md        Setup approbation
 ├── 06-CONFIG_SUPABASE_URL.md      Config URL
+├── 28-SETUP_RLS_DELETE.md         🔒 Config RLS suppressions
 │
 ├── 10-PROGRESSION.md              Historique dev
 ├── 11-FEATURES_COMPLETES.md       Features actuelles
@@ -97,6 +109,11 @@ docs/
 ├── 21-CORRECTIFS_ROUND_2.md       Correctifs #2
 ├── 22-CORRECTIFS_ROUND_3.md       Correctifs #3
 ├── 23-CORRECTIFS_ROUND_4.md       Correctifs #4
+├── 25-BUGS_A_CORRIGER.md          🐛 Bugs identifiés
+├── 26-CORRECTIONS_29_JANVIER.md   ✅ Corrections 1ère passe
+├── 27-CORRECTIONS_SUITE.md        ✅ Corrections 2ème passe
+├── 28-SETUP_RLS_DELETE.md         🔒 Config RLS suppressions
+├── 29-CORRECTIONS_FINALES.md      ✅ Fix final sondages/wordcloud
 │
 └── 30-ROADMAP.md                  🔮 Développements futurs
 ```

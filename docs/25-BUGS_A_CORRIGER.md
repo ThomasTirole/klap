@@ -1,6 +1,8 @@
 # Bugs à corriger - Session du 28 janvier 2026
 
-## 🐛 Bug 1 : Page Réponses - Erreur wordcloud
+## ✅ TOUS LES BUGS CORRIGÉS - 29 janvier 2026
+
+## 🐛 Bug 1 : Page Réponses - Erreur wordcloud [CORRIGÉ ✅]
 
 **Symptôme** :
 - Cliquer sur "Voir les réponses" → Page "Chargement..." qui ne finit jamais
@@ -22,7 +24,7 @@ Le code essaie de faire `response.payload.words.join(', ')` mais `response.paylo
 
 ---
 
-## 🐛 Bug 2 : Suppression question ouverte dans Live - Non persistante
+## 🐛 Bug 2 : Suppression question ouverte dans Live - Non persistante [CORRIGÉ ✅]
 
 **Symptôme** :
 - Dans Mode Live, supprimer une réponse ouverte avec le bouton 🗑️
@@ -132,6 +134,27 @@ const handleDeleteConfirm = async () => {
 
 ---
 
-**Date** : 28 janvier 2026 - 21h
-**Priorité** : 🔴 Haute (bugs bloquants)
-**Temps estimé** : 15-20 minutes pour les 2 bugs
+---
+
+## ✨ Nouvelle fonctionnalité ajoutée : Redirection de fin de session [AJOUTÉ ✅]
+
+**Fonctionnalité** :
+Lorsque l'enseignant ferme une session (passe de "open" à "closed"), les élèves sont automatiquement redirigés vers une page de remerciement.
+
+**Implémentation** :
+1. Détection du changement de statut en temps réel dans `app/pages/student/[code].vue`
+2. Affichage du message "Session terminée" pendant 1 seconde
+3. Redirection automatique vers `/student/end`
+4. Nouvelle page `app/pages/student/end.vue` avec message de remerciement
+5. Boutons pour rejoindre une autre session ou retourner à l'accueil
+
+**Fichiers modifiés** :
+- `app/pages/student/[code].vue` (logique de redirection + affichage différencié draft/closed)
+- `app/pages/student/end.vue` (nouvelle page créée)
+
+---
+
+**Date de création** : 28 janvier 2026 - 21h
+**Date de correction** : 29 janvier 2026
+**Priorité** : 🔴 Haute (bugs bloquants) → ✅ TERMINÉ
+**Temps estimé** : 15-20 minutes → **Temps réel** : ~20 minutes

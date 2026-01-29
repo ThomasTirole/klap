@@ -68,43 +68,92 @@
               </div>
 
               <!-- Réponses pour cette question -->
-              <div class="space-y-2">
-                <div
-                  v-for="response in item.responses"
-                  :key="response.id"
-                  class="bg-gray-50 rounded-lg p-3 flex justify-between items-start"
-                >
-                  <div class="flex-1">
-                    <!-- Affichage selon le type -->
-                    <div v-if="item.type === 'poll_single' || item.type === 'poll_multi'" class="text-sm text-gray-700">
-                      <strong>Choix :</strong> {{ formatPollResponse(response.payload, item) }}
-                    </div>
-                    <div v-else-if="item.type === 'open'" class="text-sm text-gray-700">
-                      {{ response.payload.text }}
-                    </div>
-                    <div v-else-if="item.type === 'scale'" class="text-sm text-gray-700">
-                      <strong>Note :</strong> {{ response.payload.value }}
-                    </div>
-                    <div v-else-if="item.type === 'wordcloud'" class="text-sm text-gray-700">
-                      <strong>Mots :</strong> {{ response.payload.words.join(', ') }}
-                    </div>
-
-                    <p class="text-xs text-gray-500 mt-1">
-                      {{ formatDate(response.created_at) }} • Participant {{ response.participant_id.substring(0, 8) }}
-                    </p>
-                  </div>
-
-                  <!-- Bouton supprimer (pour open et wordcloud) -->
-                  <button
-                    v-if="item.type === 'open' || item.type === 'wordcloud'"
-                    @click="openDeleteResponse(response, item)"
-                    class="ml-4 p-1 text-gray-400 hover:text-red-600 transition-colors"
-                    title="Supprimer"
+              <div>
+                <!-- Sondages : Récapitulatif -->
+                <div v-if="item.type === 'poll_single' || item.type === 'poll_multi'" class="space-y-2">
+                  <div
+                    v-for="option in getPollStats(item)"
+                    :key="option.id"
+                    class="flex items-center gap-3"
                   >
-                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
-                    </svg>
-                  </button>
+                    <div class="flex-1">
+                      <div class="flex justify-between items-center mb-1">
+                        <span class="text-sm font-medium text-gray-700">{{ option.text }}</span>
+                        <span class="text-sm text-gray-500">{{ option.count }} vote{{ option.count > 1 ? 's' : '' }}</span>
+                      </div>
+                      <div class="w-full bg-gray-200 rounded-full h-2">
+                        <div
+                          class="bg-indigo-600 h-2 rounded-full transition-all"
+                          :style="{ width: `${option.percentage}%` }"
+                        ></div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Wordcloud : Compte des mots -->
+                <div v-else-if="item.type === 'wordcloud'" class="space-y-2">
+                  <div
+                    v-for="word in getWordcloudStats(item)"
+                    :key="word.text"
+                    class="flex justify-between items-center bg-gray-50 rounded-lg p-2"
+                  >
+                    <span class="text-sm font-medium text-gray-700">{{ word.text }}</span>
+                    <span class="px-2 py-1 bg-indigo-100 text-indigo-700 text-xs font-semibold rounded">{{ word.count }}</span>
+                  </div>
+                </div>
+
+                <!-- Scale : Moyenne et distribution -->
+                <div v-else-if="item.type === 'scale'" class="space-y-3">
+                  <div class="bg-indigo-50 rounded-lg p-4 text-center">
+                    <p class="text-sm text-gray-600 mb-1">Moyenne</p>
+                    <p class="text-3xl font-bold text-indigo-600">{{ getScaleAverage(item) }}</p>
+                  </div>
+                  <div class="space-y-2">
+                    <div
+                      v-for="value in getScaleStats(item)"
+                      :key="value.value"
+                      class="flex items-center gap-3"
+                    >
+                      <span class="text-sm font-medium text-gray-700 w-8">{{ value.value }}</span>
+                      <div class="flex-1">
+                        <div class="flex justify-between items-center mb-1">
+                          <div class="w-full bg-gray-200 rounded-full h-2">
+                            <div
+                              class="bg-indigo-600 h-2 rounded-full transition-all"
+                              :style="{ width: `${value.percentage}%` }"
+                            ></div>
+                          </div>
+                        </div>
+                      </div>
+                      <span class="text-sm text-gray-500 w-12 text-right">{{ value.count }}</span>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Questions ouvertes : Liste complète -->
+                <div v-else-if="item.type === 'open'" class="space-y-2">
+                  <div
+                    v-for="(response, index) in item.responses"
+                    :key="response.id"
+                    class="bg-gray-50 rounded-lg p-3 flex justify-between items-start"
+                  >
+                    <div class="flex-1">
+                      <p class="text-sm text-gray-700">{{ response.payload.text }}</p>
+                      <p class="text-xs text-gray-500 mt-1">
+                        {{ formatDate(response.created_at) }} • Participant {{ response.participant_id.substring(0, 8) }}
+                      </p>
+                    </div>
+                    <button
+                      @click="openDeleteResponse(response, item)"
+                      class="ml-4 p-1 text-gray-400 hover:text-red-600 transition-colors"
+                      title="Supprimer"
+                    >
+                      <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                      </svg>
+                    </button>
+                  </div>
                 </div>
               </div>
             </div>
@@ -184,19 +233,103 @@ const formatDate = (date: string) => {
   })
 }
 
-const formatPollResponse = (payload: any, item: Item) => {
+const getPollStats = (item: any) => {
   const config = item.config as any
-  if (Array.isArray(payload.selected)) {
-    // Multiple
-    return payload.selected.map((id: string) => {
-      const option = config.options.find((o: any) => o.id === id)
-      return option?.text || id
-    }).join(', ')
-  } else {
-    // Single
-    const option = config.options.find((o: any) => o.id === payload.selected)
-    return option?.text || payload.selected
+  const options = config.options || []
+
+  // Compter les votes pour chaque option
+  const counts: Record<string, number> = {}
+  options.forEach((opt: any) => {
+    counts[opt.id] = 0
+  })
+
+  item.responses.forEach((response: any) => {
+    const payload = response.payload
+
+    // Poll multi : optionIds array
+    if (payload.optionIds && Array.isArray(payload.optionIds)) {
+      payload.optionIds.forEach((id: string) => {
+        counts[id] = (counts[id] || 0) + 1
+      })
+    }
+    // Poll single : optionId string
+    else if (payload.optionId) {
+      counts[payload.optionId] = (counts[payload.optionId] || 0) + 1
+    }
+  })
+
+  const total = item.responses.length || 1
+
+  return options.map((opt: any) => ({
+    id: opt.id,
+    text: opt.label || opt.text, // Support both 'label' and 'text'
+    count: counts[opt.id] || 0,
+    percentage: Math.round(((counts[opt.id] || 0) / total) * 100)
+  }))
+}
+
+const getWordcloudStats = (item: any) => {
+  const wordCounts: Record<string, number> = {}
+
+  item.responses.forEach((response: any) => {
+    const payload = response.payload
+    if (payload.text) {
+      // Parser les mots (séparés par des virgules)
+      const words = payload.text
+        .split(',')
+        .map((w: string) => w.trim().toLowerCase())
+        .filter((w: string) => w.length > 0)
+
+      words.forEach((word: string) => {
+        wordCounts[word] = (wordCounts[word] || 0) + 1
+      })
+    }
+  })
+
+  return Object.entries(wordCounts)
+    .map(([text, count]) => ({ text, count }))
+    .sort((a, b) => b.count - a.count)
+}
+
+const getScaleStats = (item: any) => {
+  const config = item.config as any
+  const min = config.min || 1
+  const max = config.max || 5
+
+  const counts: Record<number, number> = {}
+  for (let i = min; i <= max; i++) {
+    counts[i] = 0
   }
+
+  item.responses.forEach((response: any) => {
+    const value = response.payload.value
+    if (value !== undefined && value !== null) {
+      counts[value] = (counts[value] || 0) + 1
+    }
+  })
+
+  const total = item.responses.length || 1
+
+  const stats = []
+  for (let i = min; i <= max; i++) {
+    stats.push({
+      value: i,
+      count: counts[i] || 0,
+      percentage: Math.round(((counts[i] || 0) / total) * 100)
+    })
+  }
+
+  return stats
+}
+
+const getScaleAverage = (item: any) => {
+  if (item.responses.length === 0) return '0.0'
+
+  const sum = item.responses.reduce((acc: number, response: any) => {
+    return acc + (response.payload.value || 0)
+  }, 0)
+
+  return (sum / item.responses.length).toFixed(1)
 }
 
 const loadAllResponses = async () => {
@@ -228,18 +361,28 @@ const openDeleteResponse = (response: any, item: Item) => {
 const handleDeleteResponse = async () => {
   if (!confirmDeleteResponse.value.response) return
 
+  console.log('[ResponsesPage] Deleting response:', confirmDeleteResponse.value.response.id)
+
   try {
-    const { error } = await supabase
+    const { error, data } = await supabase
       .from('responses')
       .delete()
       .eq('id', confirmDeleteResponse.value.response.id)
+      .select()
 
-    if (error) throw error
+    console.log('[ResponsesPage] Delete result:', { data, error })
 
+    if (error) {
+      console.error('[ResponsesPage] Delete error:', error)
+      throw error
+    }
+
+    console.log('[ResponsesPage] Successfully deleted, reloading all responses...')
     // Recharger les réponses
     await loadAllResponses()
   } catch (error) {
-    console.error('Error deleting response:', error)
+    console.error('[ResponsesPage] Error deleting response:', error)
+    alert('Erreur lors de la suppression : ' + JSON.stringify(error))
   }
 
   confirmDeleteResponse.value = { show: false, response: null, item: null }

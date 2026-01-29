@@ -26,7 +26,7 @@
         </NuxtLink>
       </div>
 
-      <div v-else-if="session.status !== 'open'" class="bg-white rounded-lg border-2 border-yellow-200 p-8 text-center">
+      <div v-else-if="session.status === 'draft'" class="bg-white rounded-lg border-2 border-yellow-200 p-8 text-center">
         <svg class="w-16 h-16 mx-auto text-yellow-500 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
         </svg>
@@ -36,6 +36,19 @@
         </p>
         <p class="text-sm text-gray-500">
           Restez sur cette page, elle se mettra à jour automatiquement.
+        </p>
+      </div>
+
+      <div v-else-if="session.status === 'closed'" class="bg-white rounded-lg border-2 border-green-200 p-8 text-center">
+        <svg class="w-16 h-16 mx-auto text-green-500 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+        </svg>
+        <h2 class="text-2xl font-bold text-gray-900 mb-2">Session terminée</h2>
+        <p class="text-gray-600 mb-6">
+          Cette session est maintenant fermée. Merci pour votre participation !
+        </p>
+        <p class="text-sm text-gray-500">
+          Redirection dans un instant...
         </p>
       </div>
 
@@ -114,6 +127,7 @@ import type { Session, Item } from '~/types/database'
 import type { RealtimeChannel } from '@supabase/supabase-js'
 
 const route = useRoute()
+const router = useRouter()
 const { getSessionByCode, getSessionItems } = useSession()
 const { subscribeToSession, unsubscribe } = useRealtime()
 
@@ -168,11 +182,20 @@ onMounted(async () => {
 
       // S'abonner aux changements de session (question active, statut)
       realtimeChannel = subscribeToSession(sessionData.id, (updatedSession) => {
+        const previousStatus = session.value?.status
         session.value = updatedSession
 
         // Mettre à jour la question active quand elle change
         if (updatedSession.active_item_id !== activeItem.value?.id) {
           updateActiveItem(updatedSession.active_item_id)
+        }
+
+        // Rediriger si la session vient d'être fermée
+        if (previousStatus === 'open' && updatedSession.status === 'closed') {
+          console.log('[Student] Session closed, redirecting to end page...')
+          setTimeout(() => {
+            router.push('/student/end')
+          }, 1000) // Délai de 1 seconde pour laisser voir le message
         }
       })
     }

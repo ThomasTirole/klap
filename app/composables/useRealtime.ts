@@ -36,13 +36,17 @@ export const useRealtime = () => {
   // Souscrire aux nouvelles réponses d'un item
   const subscribeToItemResponses = (
     itemId: string,
-    callback: (response: Response) => void
+    callbacks: {
+      onInsert?: (response: Response) => void
+      onDelete?: (response: Response) => void
+    }
   ): RealtimeChannel => {
     console.log('[Realtime] Subscribing to item responses:', itemId)
 
-    const channel = supabase
-      .channel(`item-responses:${itemId}`)
-      .on(
+    const channel = supabase.channel(`item-responses:${itemId}`)
+
+    if (callbacks.onInsert) {
+      channel.on(
         'postgres_changes',
         {
           event: 'INSERT',
@@ -52,12 +56,30 @@ export const useRealtime = () => {
         },
         (payload) => {
           console.log('[Realtime] New response:', payload.new)
-          callback(payload.new as Response)
+          callbacks.onInsert!(payload.new as Response)
         }
       )
-      .subscribe((status) => {
-        console.log('[Realtime] Item responses subscription status:', status)
-      })
+    }
+
+    if (callbacks.onDelete) {
+      channel.on(
+        'postgres_changes',
+        {
+          event: 'DELETE',
+          schema: 'public',
+          table: 'responses',
+          filter: `item_id=eq.${itemId}`,
+        },
+        (payload) => {
+          console.log('[Realtime] Response deleted:', payload.old)
+          callbacks.onDelete!(payload.old as Response)
+        }
+      )
+    }
+
+    channel.subscribe((status) => {
+      console.log('[Realtime] Item responses subscription status:', status)
+    })
 
     return channel
   }

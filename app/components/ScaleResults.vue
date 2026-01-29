@@ -153,6 +153,11 @@ const handleNewResponse = (response: Response) => {
   updateLastUpdate()
 }
 
+const handleDeletedResponse = () => {
+  // Recharger les résultats après suppression
+  loadResults()
+}
+
 const setupSubscription = () => {
   console.log('[Teacher] Setting up subscription for item:', props.item.id)
 
@@ -165,7 +170,10 @@ const setupSubscription = () => {
 
   loadResults()
 
-  realtimeChannel = subscribeToItemResponses(props.item.id, handleNewResponse)
+  realtimeChannel = subscribeToItemResponses(props.item.id, {
+    onInsert: handleNewResponse,
+    onDelete: handleDeletedResponse
+  })
 }
 
 watch(() => props.item.id, () => {

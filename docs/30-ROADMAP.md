@@ -1,7 +1,7 @@
 # 🗺️ KLAP - Roadmap & Développements Futurs
 
 Date de création : 28 janvier 2026
-Dernière mise à jour : 28 janvier 2026
+Dernière mise à jour : 29 janvier 2026
 
 ---
 
@@ -357,13 +357,14 @@ Dernière mise à jour : 28 janvier 2026
 1. ✅ **QR Code** (TERMINÉ) - Super pratique
 2. ✅ **Aperçu des réponses** (TERMINÉ) - Vue d'ensemble
 3. ✅ **Modération basique** (TERMINÉ) - Supprimer réponses
-4. 🐛 **Bugs à corriger** (20 min) - Page réponses + modération persistante (voir 25-BUGS_A_CORRIGER.md)
-5. ⏳ **Duplication de session** (3-4h) - Gain de temps énorme
-6. ⏳ **Export CSV** (2-3h) - Très demandé
+4. ✅ **Bugs à corriger** (TERMINÉ) - Page réponses + modération persistante
+5. ✅ **Redirection fin de session** (TERMINÉ) - Auto-redirect quand session fermée
+6. ⏳ **Duplication de session** (3-4h) - Gain de temps énorme
+7. ⏳ **Export CSV** (2-3h) - Très demandé
 
 **Total** : ~8-10 heures
 **Impact** : 🔥🔥🔥
-**Progression** : 3/6 terminées + 2 bugs à fixer
+**Progression** : 5/7 terminées ✨
 
 ---
 
