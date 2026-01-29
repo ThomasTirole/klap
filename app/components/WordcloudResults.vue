@@ -14,16 +14,8 @@
     </div>
 
     <!-- Nuage de mots -->
-    <div v-if="sortedWords.length > 0" class="min-h-[400px] bg-gradient-to-br from-purple-50 to-indigo-50 rounded-xl p-8 flex flex-wrap items-center justify-center gap-4">
-      <span
-        v-for="word in sortedWords"
-        :key="word.text"
-        class="font-bold text-indigo-600 hover:text-indigo-700 transition-all cursor-default"
-        :style="{ fontSize: `${word.size}px` }"
-        :title="`${word.count} fois`"
-      >
-        {{ word.text }}
-      </span>
+    <div v-if="sortedWords.length > 0" class="min-h-[500px] h-[500px] bg-gradient-to-br from-purple-50 via-indigo-50 to-blue-50 rounded-xl p-8 relative overflow-hidden">
+      <canvas ref="wordcloudCanvas" class="w-full h-full wordcloud-canvas"></canvas>
     </div>
 
     <!-- Pas de mots -->
@@ -70,10 +62,13 @@
 <script setup lang="ts">
 import type { Item, WordcloudPayload, Response } from '~/types/database'
 import type { RealtimeChannel } from '@supabase/supabase-js'
+import WordCloud from 'wordcloud'
 
 const props = defineProps<{
   item: Item
 }>()
+
+const wordcloudCanvas = ref<HTMLCanvasElement | null>(null)
 
 const supabase = useSupabase()
 const { subscribeToItemResponses, unsubscribe } = useRealtime()
@@ -102,6 +97,94 @@ const sortedWords = computed(() => {
     size: Math.max(minSize, Math.min(maxSize, minSize + ((word.count / maxCount) * (maxSize - minSize))))
   }))
 })
+
+const drawWordcloud = () => {
+  if (!wordcloudCanvas.value || sortedWords.value.length === 0) return
+
+  const canvas = wordcloudCanvas.value
+  const container = canvas.parentElement
+
+  if (!container) return
+
+  // Ajouter classe d'animation bounce
+  canvas.classList.remove('wordcloud-bounce')
+  void canvas.offsetWidth // Force reflow
+  canvas.classList.add('wordcloud-bounce')
+
+  // Obtenir la taille réelle du conteneur
+  const containerWidth = container.clientWidth
+  const containerHeight = container.clientHeight || 500
+
+  // Utiliser un DPR élevé pour une meilleure qualité (x2 minimum)
+  const dpr = Math.max(window.devicePixelRatio || 1, 2)
+  canvas.width = containerWidth * dpr
+  canvas.height = containerHeight * dpr
+  canvas.style.width = `${containerWidth}px`
+  canvas.style.height = `${containerHeight}px`
+
+  // Obtenir le contexte et activer les options de qualité
+  const ctx = canvas.getContext('2d')
+  if (ctx) {
+    ctx.imageSmoothingEnabled = true
+    ctx.imageSmoothingQuality = 'high'
+  }
+
+  // Palette de couleurs très variée
+  const colors = [
+    '#ef4444', // red-500
+    '#f59e0b', // amber-500
+    '#10b981', // emerald-500
+    '#06b6d4', // cyan-500
+    '#3b82f6', // blue-500
+    '#6366f1', // indigo-500
+    '#8b5cf6', // violet-500
+    '#a855f7', // purple-500
+    '#ec4899', // pink-500
+    '#f43f5e', // rose-500
+    '#84cc16', // lime-500
+    '#14b8a6', // teal-500
+  ]
+
+  // Préparer les données pour wordcloud: [[mot, poids], ...]
+  const wordList = sortedWords.value.map(word => [word.text, word.count] as [string, number])
+
+  // Calculer la taille maximale des mots en fonction du nombre de mots
+  const maxCount = sortedWords.value[0]?.count || 1
+  const baseSize = Math.min(containerWidth, containerHeight) / 8 // Taille de base adaptative
+
+  // Dessiner le nuage de mots
+  WordCloud(canvas, {
+    list: wordList,
+    gridSize: 6,
+    weightFactor: (size) => {
+      // Taille proportionnelle x2.5
+      const ratio = size / maxCount
+      return ((baseSize * 0.3) + (ratio * baseSize * 0.7)) * 2.5
+    },
+    fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Inter, system-ui, sans-serif',
+    fontWeight: '700',
+    color: () => {
+      // Couleur aléatoire de la palette
+      return colors[Math.floor(Math.random() * colors.length)]
+    },
+    rotateRatio: 0.4, // 40% des mots en rotation
+    rotationSteps: 4, // 4 angles possibles
+    minRotation: -Math.PI / 4, // -45°
+    maxRotation: Math.PI / 4, // +45°
+    backgroundColor: 'transparent',
+    shuffle: true,
+    drawOutOfBound: false,
+    shrinkToFit: true,
+    clearCanvas: true,
+  })
+}
+
+// Redessiner quand les mots changent
+watch(sortedWords, () => {
+  nextTick(() => {
+    drawWordcloud()
+  })
+}, { deep: true })
 
 const updateLastUpdate = () => {
   const now = new Date()
@@ -161,7 +244,7 @@ const handleDeletedResponse = () => {
   loadResults()
 }
 
-const setupSubscription = () => {
+const setupSubscription = async () => {
   console.log('[Teacher] Setting up subscription for item:', props.item.id)
 
   if (realtimeChannel) {
@@ -171,7 +254,12 @@ const setupSubscription = () => {
   wordCounts.value = {}
   totalResponses.value = 0
 
-  loadResults()
+  await loadResults()
+
+  // Dessiner le nuage après le chargement
+  nextTick(() => {
+    drawWordcloud()
+  })
 
   realtimeChannel = subscribeToItemResponses(props.item.id, {
     onInsert: handleNewResponse,
@@ -186,6 +274,9 @@ watch(() => props.item.id, () => {
 
 onMounted(() => {
   setupSubscription()
+  nextTick(() => {
+    drawWordcloud()
+  })
 })
 
 onUnmounted(() => {
@@ -194,3 +285,30 @@ onUnmounted(() => {
   }
 })
 </script>
+
+<style scoped>
+/* Animation bounce légère pour l'apparition du nuage */
+@keyframes wordcloud-bounce {
+  0% {
+    opacity: 0;
+    transform: scale(0.8);
+  }
+  50% {
+    transform: scale(1.02);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+.wordcloud-bounce {
+  animation: wordcloud-bounce 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+/* Amélioration du rendu du canvas */
+.wordcloud-canvas {
+  image-rendering: -webkit-optimize-contrast;
+  image-rendering: crisp-edges;
+}
+</style>
