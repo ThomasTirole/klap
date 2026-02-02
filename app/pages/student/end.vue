@@ -43,9 +43,9 @@
       </div>
 
       <!-- Footer -->
-      <p class="text-center text-gray-600 mt-6 text-sm">
-        Powered by <span class="font-bold text-purple-600">KLAP</span>
-      </p>
+      <div class="flex justify-center mt-6">
+        <img src="/logo.svg" alt="Klap!" class="h-10" />
+      </div>
     </div>
   </div>
 </template>

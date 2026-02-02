@@ -4,7 +4,7 @@
       <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div class="flex justify-between items-center h-16">
           <div class="flex items-center">
-            <h1 class="text-2xl font-bold text-indigo-600">KLAP</h1>
+            <img src="/logo.svg" alt="Klap!" class="h-10" />
             <span class="ml-4 text-gray-500">Espace Enseignant</span>
           </div>
           <div class="flex items-center gap-4">

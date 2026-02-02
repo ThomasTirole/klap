@@ -9,7 +9,7 @@
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
               </svg>
             </NuxtLink>
-            <h1 class="text-2xl font-bold text-indigo-600">KLAP</h1>
+            <img src="/logo.svg" alt="Klap!" class="h-10" />
             <span class="text-gray-500">Nouvelle Session</span>
           </div>
         </div>

@@ -13,7 +13,7 @@
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
               </svg>
             </NuxtLink>
-            <h1 class="text-xl font-bold text-white">KLAP</h1>
+            <img src="/logo.svg" alt="Klap!" class="h-10" />
             <span v-if="session" class="text-gray-300">{{ session.title }}</span>
           </div>
           <div v-if="session" class="flex items-center gap-4">
