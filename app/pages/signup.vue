@@ -1,9 +1,10 @@
 <template>
-  <div class="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 flex items-center justify-center p-4">
-    <div class="max-w-md w-full bg-white rounded-2xl shadow-xl p-8">
+  <div class="min-h-screen bg-gradient-to-br from-indigo-900 via-purple-900 to-pink-900 flex items-center justify-center p-4">
+    <div class="max-w-md w-full bg-white bg-opacity-95 backdrop-blur-sm rounded-2xl shadow-2xl p-8">
       <div class="text-center mb-8">
-        <h1 class="text-3xl font-bold text-gray-900 mb-2">Créer un compte</h1>
-        <p class="text-gray-600">Commencez à utiliser KLAP</p>
+        <img src="/logo.svg" alt="Klap!" class="h-16 mx-auto mb-4" />
+        <h2 class="text-2xl font-bold text-gray-900 mb-2">Créer un compte</h2>
+        <p class="text-gray-600">Commencez à utiliser Klap!</p>
       </div>
 
       <form @submit.prevent="handleSignup" class="space-y-6">

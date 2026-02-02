@@ -4,7 +4,7 @@
       <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
         <div class="flex justify-between items-center h-16">
           <div class="flex items-center gap-3">
-            <h1 class="text-2xl font-bold text-purple-600">KLAP</h1>
+            <img src="/logo.svg" alt="Klap!" class="h-10" />
             <span v-if="session" class="text-gray-500">{{ session.title }}</span>
           </div>
           <span v-if="session" class="text-lg font-mono font-bold text-purple-600">
