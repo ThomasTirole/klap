@@ -227,7 +227,7 @@ const showQRCode = ref(false)
 const config = useRuntimeConfig()
 const joinUrl = computed(() => {
   if (!session.value) return ''
-  return `${config.public.siteUrl || 'https://klap-steel.vercel.app'}/student/${session.value.join_code}`
+  return `${config.public.siteUrl || 'https://klap-it.ch'}/student/${session.value.join_code}`
 })
 
 const currentIndex = computed(() => {
