@@ -77,6 +77,7 @@ Accédez à `http://localhost:3000`
 - **[Roadmap](./docs/30-ROADMAP.md)** - Développements futurs
 - **[Setup Supabase](./docs/04-SETUP_REALTIME.md)** - Configuration technique
 - **[Architecture](./docs/02-ARCHITECTURE.md)** - Structure du code
+- **[Déploiement FTP](./docs/DEPLOYMENT_FTP.md)** - Déploiement sur Infomaniak
 
 ## 🛠️ Stack Technique
 
@@ -106,6 +107,27 @@ Accédez à `http://localhost:3000`
 ## 📸 Captures d'écran
 
 _À venir_
+
+## 🚀 Déploiement
+
+KLAP est configuré pour un déploiement automatique sur Infomaniak via FTP.
+
+### Déploiement automatique (GitHub Actions)
+
+À chaque push sur la branche `main`, le projet est automatiquement :
+1. Compilé avec `nuxt generate`
+2. Déployé sur l'hébergement Infomaniak via FTP
+
+### Configuration requise
+
+Pour activer le déploiement automatique, vous devez configurer les secrets GitHub suivants :
+- `FTP_SERVER` : Serveur FTP Infomaniak
+- `FTP_USERNAME` : Nom d'utilisateur FTP
+- `FTP_PASSWORD` : Mot de passe FTP
+- `SUPABASE_URL` : URL de votre projet Supabase
+- `SUPABASE_KEY` : Clé publique Supabase
+
+👉 **[Guide complet de déploiement](./docs/DEPLOYMENT_FTP.md)**
 
 ## 🤝 Contribution
 
