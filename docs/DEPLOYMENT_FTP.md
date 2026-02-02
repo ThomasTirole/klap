@@ -24,18 +24,18 @@ Pour que le déploiement fonctionne, vous devez configurer les secrets suivants 
 
 #### 1. FTP_SERVER
 - **Nom** : `FTP_SERVER`
-- **Valeur** : L'adresse du serveur FTP Infomaniak (ex: `ftp.example.com` ou `ftp.klap-it.ch`)
-- **Comment trouver** : Dans votre panneau Infomaniak, section FTP
+- **Valeur** : L'adresse du serveur FTP Infomaniak (généralement au format `ftp.dc3-xyz.infomaniak.ch` ou `ftp.klap-it.ch`)
+- **Comment trouver** : Dans votre panneau Infomaniak → Hébergement Web → Accès FTP → Serveur FTP
 
 #### 2. FTP_USERNAME
 - **Nom** : `FTP_USERNAME`
 - **Valeur** : Votre nom d'utilisateur FTP
-- **Comment trouver** : Dans votre panneau Infomaniak, section FTP
+- **Comment trouver** : Dans votre panneau Infomaniak → Hébergement Web → Accès FTP → Nom d'utilisateur
 
 #### 3. FTP_PASSWORD
 - **Nom** : `FTP_PASSWORD`
 - **Valeur** : Votre mot de passe FTP
-- **Comment trouver** : Utilisez le mot de passe que vous avez défini ou réinitialisez-le dans le panneau Infomaniak
+- **Comment trouver** : Utilisez le mot de passe que vous avez défini, ou réinitialisez-le dans le panneau Infomaniak → Hébergement Web → Accès FTP → Modifier le mot de passe
 
 #### 4. SUPABASE_URL
 - **Nom** : `SUPABASE_URL`
