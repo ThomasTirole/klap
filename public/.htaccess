@@ -2,10 +2,16 @@
   RewriteEngine On
   RewriteBase /
 
-  # Si le fichier ou dossier existe, le servir directement
+  # Ne pas toucher aux fichiers et dossiers existants
   RewriteCond %{REQUEST_FILENAME} !-f
   RewriteCond %{REQUEST_FILENAME} !-d
 
-  # Sinon, rediriger vers index.html (SPA fallback)
-  RewriteRule ^(.*)$ /index.html [L]
+  # SPA fallback : servir index.html pour toutes les autres requêtes
+  # Le [L] garantit que c'est un rewrite interne (pas de redirection visible)
+  RewriteRule . /index.html [L]
+</IfModule>
+
+# Si mod_rewrite n'est pas dispo, utiliser FallbackResource (Apache 2.2.16+)
+<IfModule !mod_rewrite.c>
+  FallbackResource /index.html
 </IfModule>

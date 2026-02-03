@@ -131,7 +131,7 @@ const router = useRouter()
 const { getSessionByCode, getSessionItems } = useSession()
 const { subscribeToSession, unsubscribe } = useRealtime()
 
-const code = route.params.code as string
+const code = route.params.sessionCode as string
 const session = ref<Session | null>(null)
 const activeItem = ref<Item | null>(null)
 const loading = ref(true)

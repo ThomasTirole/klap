@@ -3,6 +3,9 @@ export default defineNuxtConfig({
   compatibilityDate: '2025-07-15',
   devtools: { enabled: true },
 
+  // Mode SPA statique pour hébergement Apache (Infomaniak)
+  ssr: false,
+
   app: {
     head: {
       title: 'Klap!',
