@@ -1,11 +1,19 @@
+# Force HTTPS (optionnel, décommenter si besoin)
+# RewriteCond %{HTTPS} off
+# RewriteRule ^(.*)$ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
+
 <IfModule mod_rewrite.c>
   RewriteEngine On
   RewriteBase /
 
-  # Si le fichier ou dossier existe, le servir directement
+  # Ne pas rediriger les fichiers existants
   RewriteCond %{REQUEST_FILENAME} !-f
+  # Ne pas rediriger les dossiers existants
   RewriteCond %{REQUEST_FILENAME} !-d
 
-  # Sinon, rediriger vers index.html (SPA fallback)
+  # Fallback SPA : toutes les autres requêtes vont vers index.html
   RewriteRule ^(.*)$ /index.html [L]
 </IfModule>
+
+# Fallback si mod_rewrite n'est pas disponible
+ErrorDocument 404 /index.html
