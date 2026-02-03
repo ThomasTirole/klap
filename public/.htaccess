@@ -1,17 +1,21 @@
+DirectoryIndex index.html
+
 <IfModule mod_rewrite.c>
   RewriteEngine On
+
+  # Définir la base - IMPORTANT pour Infomaniak
   RewriteBase /
 
-  # Ne pas toucher aux fichiers et dossiers existants
-  RewriteCond %{REQUEST_FILENAME} !-f
-  RewriteCond %{REQUEST_FILENAME} !-d
+  # Si c'est un fichier réel, le servir
+  RewriteCond %{REQUEST_FILENAME} -f [OR]
+  RewriteCond %{REQUEST_FILENAME} -d
+  RewriteRule ^ - [L]
 
-  # SPA fallback : servir index.html pour toutes les autres requêtes
-  # Le [L] garantit que c'est un rewrite interne (pas de redirection visible)
-  RewriteRule . /index.html [L]
+  # Sinon, servir index.html SANS redirection (PT = passthrough)
+  RewriteRule ^ index.html [L,PT]
 </IfModule>
 
-# Si mod_rewrite n'est pas dispo, utiliser FallbackResource (Apache 2.2.16+)
+# Fallback alternatif
 <IfModule !mod_rewrite.c>
   FallbackResource /index.html
 </IfModule>
