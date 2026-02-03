@@ -178,18 +178,10 @@
               <QRCodeDisplay
                 :url="joinUrl"
                 :code="session.join_code"
-                :size="300"
+                :size="280"
+                :show-code="false"
+                :show-url="true"
               />
-
-              <!-- Info -->
-              <div class="mt-6 p-4 bg-indigo-50 rounded-lg">
-                <p class="text-sm text-indigo-800 text-center">
-                  <svg class="w-5 h-5 inline mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                  </svg>
-                  Scannez avec un téléphone pour rejoindre
-                </p>
-              </div>
 
               <!-- Bouton fermer -->
               <button
