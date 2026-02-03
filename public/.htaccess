@@ -1,19 +1,17 @@
-# Force HTTPS (optionnel, décommenter si besoin)
-# RewriteCond %{HTTPS} off
-# RewriteRule ^(.*)$ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
-
 <IfModule mod_rewrite.c>
   RewriteEngine On
   RewriteBase /
 
-  # Ne pas rediriger les fichiers existants
+  # Ne pas toucher aux fichiers et dossiers existants
   RewriteCond %{REQUEST_FILENAME} !-f
-  # Ne pas rediriger les dossiers existants
   RewriteCond %{REQUEST_FILENAME} !-d
 
-  # Fallback SPA : toutes les autres requêtes vont vers index.html
-  RewriteRule ^(.*)$ /index.html [L]
+  # SPA fallback : servir index.html pour toutes les autres requêtes
+  # Le [L] garantit que c'est un rewrite interne (pas de redirection visible)
+  RewriteRule . /index.html [L]
 </IfModule>
 
-# Fallback si mod_rewrite n'est pas disponible
-ErrorDocument 404 /index.html
+# Si mod_rewrite n'est pas dispo, utiliser FallbackResource (Apache 2.2.16+)
+<IfModule !mod_rewrite.c>
+  FallbackResource /index.html
+</IfModule>
